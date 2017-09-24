@@ -3,14 +3,15 @@ using System.Collections;
 
 public class WallAvoidanceUnit: MonoBehaviour
 {
-
+    // 编辑器编辑 路径
     public LinePath path;
 
+    // 组件
     private SteeringBasics steeringBasics;
     private WallAvoidance wallAvoidance;
     private FollowPath followPath;
 
-    // Use this for initialization
+    
     void Start()
     {
         path.calcDistances();
@@ -23,21 +24,26 @@ public class WallAvoidanceUnit: MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 到达终点了， 原路返回
         if (isAtEndOfPath())
         {
             path.reversePath();
         }
 
-        Vector3 accel = wallAvoidance.getSteering();
+        // 得到加速度 （要躲避墙）
+        Vector3 accel = wallAvoidance.GetSteering();
 
+        // 沿着路径走了 （约定没有碰撞时 加速度为0了）
         if (accel.magnitude < 0.005f)
         {
             accel = followPath.getSteering(path);
         }
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        // 设置刚体 和 朝向
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
 
+        // 调试
         path.draw();
     }
 

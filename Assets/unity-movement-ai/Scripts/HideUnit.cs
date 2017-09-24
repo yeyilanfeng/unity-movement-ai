@@ -10,7 +10,6 @@ public class HideUnit : MonoBehaviour {
 
     private WallAvoidance wallAvoid;
 
-    // Use this for initialization
     void Start()
     {
         steeringBasics = GetComponent<SteeringBasics>();
@@ -20,20 +19,23 @@ public class HideUnit : MonoBehaviour {
         wallAvoid = GetComponent<WallAvoidance>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // 得到加速度   躲在障碍物后面，同时不被目标看到
         Vector3 hidePosition;
-        Vector3 hideAccel = hide.getSteering(target, obstacleSpawner.objs, out hidePosition);
+        Vector3 hideAccel = hide.GetSteering(target, obstacleSpawner.objs, out hidePosition);
 
-        Vector3 accel = wallAvoid.getSteering(hidePosition - transform.position);
+        // 如果撞墙要 解决
+        Vector3 accel = wallAvoid.GetSteering(hidePosition - transform.position);
 
+        // 没有撞墙 （说明如果撞墙先解决撞墙）
         if (accel.magnitude < 0.005f)
         {
             accel = hideAccel;
         }
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        // 设置速度 和 朝向
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
     }
 }

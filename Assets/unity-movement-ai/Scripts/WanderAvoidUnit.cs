@@ -7,9 +7,9 @@ public class WanderAvoidUnit : MonoBehaviour {
     private Wander2 wander;
     private CollisionAvoidance colAvoid;
 
+    // 用于纪录当前都有谁与我发生碰撞
     private NearSensor colAvoidSensor;
 
-    // Use this for initialization
     void Start()
     {
         steeringBasics = GetComponent<SteeringBasics>();
@@ -22,14 +22,18 @@ public class WanderAvoidUnit : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        Vector3 accel = colAvoid.getSteering(colAvoidSensor.targets);
+        // 加速度（有碰撞 就避免碰撞）
+        Vector3 accel = colAvoid.GetSteering(colAvoidSensor.targets);
 
+        // 没有任何碰撞的时候就  漫游
         if (accel.magnitude < 0.005f)
         {
-            accel = wander.getSteering();
+            accel = wander.GetSteering();
         }
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        // 速度
+        steeringBasics.Steer(accel);
+        // 朝向
+        steeringBasics.LookWhereYoureGoing();
     }
 }

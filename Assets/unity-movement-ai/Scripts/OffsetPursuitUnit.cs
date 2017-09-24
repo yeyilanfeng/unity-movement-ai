@@ -7,13 +7,13 @@ public class OffsetPursuitUnit : MonoBehaviour {
     public Vector3 offset;
     public float groupLookDist = 1.5f;
 
+    // 组件
     private SteeringBasics steeringBasics;
     private OffsetPursuit offsetPursuit;
     private Separation separation;
 
     private NearSensor sensor;
 
-    // Use this for initialization
     void Start()
     {
         steeringBasics = GetComponent<SteeringBasics>();
@@ -23,19 +23,20 @@ public class OffsetPursuitUnit : MonoBehaviour {
         sensor = transform.Find("SeparationSensor").GetComponent<NearSensor>();
     }
 
-    // Update is called once per frame
     void LateUpdate()
     {
         Vector3 targetPos;
+        // 偏移追随加速度  和  分隔加速度
         Vector3 offsetAccel = offsetPursuit.getSteering(target, offset, out targetPos);
-        Vector3 sepAccel = separation.getSteering(sensor.targets);
+        Vector3 sepAccel = separation.GetSteering(sensor.targets);
 
-        steeringBasics.steer(offsetAccel + sepAccel);
+        // 速度会  受到两个方面的影响
+        steeringBasics.Steer(offsetAccel + sepAccel);
 
-        /* If we are still arriving then look where we are going, else look the same direction as our formation target */
+        /* 如果我们还在前往，那就要朝向我们要去的地方，其他的方向和我们的形成目标是一样的 */
         if (Vector3.Distance(transform.position, targetPos) > groupLookDist)
         {
-            steeringBasics.lookWhereYoureGoing();
+            steeringBasics.LookWhereYoureGoing();
         } else
         {
             steeringBasics.lookAtDirection(target.rotation);

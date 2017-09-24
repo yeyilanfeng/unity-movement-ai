@@ -2,16 +2,16 @@
 using System.Collections;
 
 public class ColAvoidUnit : MonoBehaviour {
-
+    // 编辑器设置
     public LinePath path;
 
+    // 组件
     private SteeringBasics steeringBasics;
     private FollowPath followPath;
     private CollisionAvoidance colAvoid;
 
     private NearSensor colAvoidSensor;
 
-    // Use this for initialization
     void Start()
     {
         path.calcDistances();
@@ -23,25 +23,29 @@ public class ColAvoidUnit : MonoBehaviour {
         colAvoidSensor = transform.Find("ColAvoidSensor").GetComponent<NearSensor>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // 调试
         path.draw();
 
+        // 是否原路返回
         if (isAtEndOfPath())
         {
             path.reversePath();
         }
 
-        Vector3 accel = colAvoid.getSteering(colAvoidSensor.targets);
+        // 躲避 加速度
+        Vector3 accel = colAvoid.GetSteering(colAvoidSensor.targets);
 
+        // 不需要躲避 就沿着路径走
         if (accel.magnitude < 0.005f)
         {
             accel = followPath.getSteering(path);
         }
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        // 设置刚体速度 和 朝向
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
     }
 
     public bool isAtEndOfPath()

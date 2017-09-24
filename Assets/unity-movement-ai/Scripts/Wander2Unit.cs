@@ -17,9 +17,9 @@ public class Wander2Unit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 accel = wander.getSteering();
+        Vector3 accel = wander.GetSteering();
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
     }
 }

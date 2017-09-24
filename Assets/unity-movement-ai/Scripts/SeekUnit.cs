@@ -16,7 +16,7 @@ public class SeekUnit : MonoBehaviour {
 	void Update () {
         Vector3 accel = steeringBasics.seek(target.position);
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
     }
 }

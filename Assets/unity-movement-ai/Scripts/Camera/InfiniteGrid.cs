@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 /**
- * This class will create an infinite grid in the x/y directions for a camera using perspective.
- * Put this class on your camera.
+ * 这个类将在x / y方向上为相机创建一个无限的网格。把这个脚本放在你的相机上。
  */
 public class InfiniteGrid : MonoBehaviour { 
 	
@@ -14,7 +13,7 @@ public class InfiniteGrid : MonoBehaviour {
 
 	public float zPosition = 0;
 
-	private float[] getGridBounds() {
+	private float[] GetGridBounds() {
 		float distToGrid = zPosition - transform.position.z;
 
 		float angle = (GetComponent<Camera>().fieldOfView / 2) * Mathf.Deg2Rad;
@@ -40,8 +39,8 @@ public class InfiniteGrid : MonoBehaviour {
 	}
 
     public Material lineMat;
-	
-	void OnPostRender() 
+    // GL 是Unity提供很底层的API, 可以画一些图形
+    void OnPostRender() 
 	{
 		GL.Begin( GL.LINES );
 		
@@ -50,7 +49,7 @@ public class InfiniteGrid : MonoBehaviour {
 			Material lineMaterial = lineMat;
 			lineMaterial.SetPass( 0 );
 
-			float[] bounds = getGridBounds ();
+			float[] bounds = GetGridBounds ();
 			
 			//X axis lines
 			for(float j = 0; bounds[1] + j <= bounds[3]; j += cellSize)

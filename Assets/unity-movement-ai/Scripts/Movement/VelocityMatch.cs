@@ -5,12 +5,15 @@ using System.Collections.Generic;
 [RequireComponent(typeof(SteeringBasics))]
 public class VelocityMatch : MonoBehaviour
 {
-
+    // 视野范围
     public float facingCosine = 90;
+
     public float timeToTarget = 0.1f;
     public float maxAcceleration = 4f;
 
+    // 视野的余弦值
     private float facingCosineVal;
+
 
     private Rigidbody rb;
     private SteeringBasics steeringBasics;
@@ -24,22 +27,24 @@ public class VelocityMatch : MonoBehaviour
         steeringBasics = GetComponent<SteeringBasics>();
     }
 
-    public Vector3 getSteering(ICollection<Rigidbody> targets)
+    public Vector3 GetSteering(ICollection<Rigidbody> targets)
     {
         Vector3 accel = Vector3.zero;
         int count = 0;
 
+        // 得到我视野内 所有人的 加速度平均值
         foreach (Rigidbody r in targets)
         {
             if (steeringBasics.isFacing(r.position, facingCosineVal))
             {
-                /* Calculate the acceleration we want to match this target */
+                /* 计算我们想要匹配这个目标的加速度 */
                 Vector3 a = r.velocity - rb.velocity;
                 /*
                  Rather than accelerate the character to the correct speed in 1 second, 
                  accelerate so we reach the desired speed in timeToTarget seconds 
                  (if we were to actually accelerate for the full timeToTarget seconds).
                 */
+                // 而不是在1秒内加速字符的正确速度，这样我们就能在目标秒内达到所期望的速度(如果我们要在目标秒内加速的话)。
                 a = a / timeToTarget;
 
                 accel += a;
@@ -52,7 +57,7 @@ public class VelocityMatch : MonoBehaviour
         {
             accel = accel / count;
 
-            /* Make sure we are accelerating at max acceleration */
+            /* 不要超值 */
             if (accel.magnitude > maxAcceleration)
             {
                 accel = accel.normalized * maxAcceleration;

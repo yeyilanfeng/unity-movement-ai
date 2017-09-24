@@ -2,67 +2,77 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class CollisionAvoidance : MonoBehaviour {
+public class CollisionAvoidance : MonoBehaviour
+{
     public float maxAcceleration = 15f;
-
-    //public float agentRadius = 0.25f;
-
+    // 角色半径
     private float characterRadius;
 
     private Rigidbody rb;
 
-    // Use this for initialization
+
     void Start()
     {
-        characterRadius = SteeringBasics.getBoundingRadius(transform);
+        characterRadius = SteeringBasics.GetBoundingRadius(transform);
 
         rb = GetComponent<Rigidbody>();
     }
 
-    public Vector3 getSteering(ICollection<Rigidbody> targets)
+    public Vector3 GetSteering(ICollection<Rigidbody> targets)
     {
         Vector3 acceleration = Vector3.zero;
 
-        /* 1. Find the target that the character will collide with first */
+        /* 1. 找出这个角色将会与之碰撞的第一个目标 */
 
-        /* The first collision time */
-        float shortestTime = float.PositiveInfinity;
+        /* 第一次碰撞时间 */
+        float shortestTime = float.PositiveInfinity; // 正无穷大   临时值
 
-        /* The first target that will collide and other data that
-		 * we will need and can avoid recalculating */
-        Rigidbody firstTarget = null;
+       /* The first target that will collide and other data that
+        * we will need and can avoid recalculating */
+
+       // 重置数据  ，并且可以避免重新计算
+       Rigidbody firstTarget = null;
         //float firstMinSeparation = 0, firstDistance = 0;
-        float firstMinSeparation = 0, firstDistance = 0, firstRadius = 0;
-        Vector3 firstRelativePos = Vector3.zero, firstRelativeVel = Vector3.zero;
+        float firstMinSeparation = 0, 
+            firstDistance = 0, 
+            firstRadius = 0;
+        Vector3 firstRelativePos = Vector3.zero, 
+            firstRelativeVel = Vector3.zero;
 
         foreach (Rigidbody r in targets)
         {
-            /* Calculate the time to collision */
+            /* 计算碰撞时间 */
+            // 相差位置
             Vector3 relativePos = transform.position - r.position;
+            // 相差速度
             Vector3 relativeVel = rb.velocity - r.velocity;
+            // 标量
             float distance = relativePos.magnitude;
             float relativeSpeed = relativeVel.magnitude;
 
+            // 说明朝着相反的方向运动 并且速度一样
             if (relativeSpeed == 0)
             {
                 continue;
             }
 
+            // 
             float timeToCollision = -1 * Vector3.Dot(relativePos, relativeVel) / (relativeSpeed * relativeSpeed);
 
-            /* Check if they will collide at all */
+            /* 检查它们是否会碰撞 */
             Vector3 separation = relativePos + relativeVel * timeToCollision;
             float minSeparation = separation.magnitude;
 
-            float targetRadius = SteeringBasics.getBoundingRadius(r.transform);
+            float targetRadius = SteeringBasics.GetBoundingRadius(r.transform);
 
+            // 两者分离了
             if (minSeparation > characterRadius + targetRadius)
             //if (minSeparation > 2 * agentRadius)
             {
                 continue;
             }
 
-            /* Check if its the shortest */
+            /* 检查它是否是最短， 是的话就纪录最短的 */
             if (timeToCollision > 0 && timeToCollision < shortestTime)
             {
                 shortestTime = timeToCollision;
@@ -75,28 +85,29 @@ public class CollisionAvoidance : MonoBehaviour {
             }
         }
 
-        /* 2. Calculate the steering */
+        /* 2. 计算加速度 */
 
-        /* If we have no target then exit */
+        /* 如果没有目标，就退出 */
         if (firstTarget == null)
         {
             return acceleration;
         }
 
         /* If we are going to collide with no separation or if we are already colliding then 
-		 * steer based on current position */
+		 * Steer based on current position */
+        // 如果我们要在没有分离的情况下发生碰撞，或者如果我们已经碰撞了，然后根据当前位置进行碰撞
         if (firstMinSeparation <= 0 || firstDistance < characterRadius + firstRadius)
         //if (firstMinSeparation <= 0 || firstDistance < 2 * agentRadius)
         {
             acceleration = transform.position - firstTarget.position;
         }
-        /* Else calculate the future relative position */
+        /* 计算未来的相对位置 */
         else
         {
             acceleration = firstRelativePos + firstRelativeVel * shortestTime;
         }
 
-        /* Avoid the target */
+        /* 远离目标 */
         acceleration.Normalize();
         acceleration *= maxAcceleration;
 

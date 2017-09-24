@@ -16,9 +16,9 @@ public class ArriveUnit : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        Vector3 accel = steeringBasics.arrive(targetPosition);
+        Vector3 accel = steeringBasics.Arrive(targetPosition);
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
     }
 }

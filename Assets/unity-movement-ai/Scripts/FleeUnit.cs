@@ -16,12 +16,13 @@ public class FleeUnit : MonoBehaviour
         flee = GetComponent<Flee>();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        // 得到线性加速度
         Vector3 accel = flee.getSteering(target.position);
-
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        // 设置刚体速度
+        steeringBasics.Steer(accel);
+        // 设置朝向
+        steeringBasics.LookWhereYoureGoing();
     }
 }

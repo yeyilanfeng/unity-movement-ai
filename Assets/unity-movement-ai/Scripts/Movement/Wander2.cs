@@ -7,7 +7,7 @@ public class Wander2 : MonoBehaviour {
     
     public float wanderDistance = 2f;
 
-    //maximum amount of random displacement a second
+    // 随机的最大位移（1秒）
     public float wanderJitter = 40f;
 
     private Vector3 wanderTarget;
@@ -16,31 +16,32 @@ public class Wander2 : MonoBehaviour {
 
     void Start()
     {
-        //stuff for the wander behavior
-        float theta = Random.value * 2 * Mathf.PI;
+        // 随机一个 弧度   （角度的取值范围 0~360， 弧度范围 0~2π）
+        float theta = Random.value * 2 * Mathf.PI;   
 
-        //create a vector to a target position on the wander circle
+        // 位置 向量（极坐标 得到）     // x = rcos（θ），     y = rsin（θ），
         wanderTarget = new Vector3(wanderRadius * Mathf.Cos(theta), wanderRadius * Mathf.Sin(theta), 0f);
 
         steeringBasics = GetComponent<SteeringBasics>();
     }
 
-    public Vector3 getSteering()
+    public Vector3 GetSteering()
     {
-        //get the jitter for this time frame
+        // 得到一帧时间的  最大位移
         float jitter = wanderJitter * Time.deltaTime;
 
-        //add a small random vector to the target's position
+        // 向目标的位置添加一个小的随机向量（每一帧都调整新的）  
         wanderTarget += new Vector3(Random.Range(-1f, 1f) * jitter, Random.Range(-1f, 1f) * jitter, 0f);
 
-        //make the wanderTarget fit on the wander circle again
+        // 得到新的漫游圈
         wanderTarget.Normalize();
         wanderTarget *= wanderRadius;
 
-        //move the target in front of the character
+        // 得到目标位置， 在角色的前方   right = ( 1, 0, 0 )
         Vector3 targetPosition = transform.position + transform.right * wanderDistance + wanderTarget;
 
-        //Debug.DrawLine(transform.position, targetPosition);
+        // 为了调试用
+        Debug.DrawLine(transform.position, targetPosition);
 
         return steeringBasics.seek(targetPosition);
     }

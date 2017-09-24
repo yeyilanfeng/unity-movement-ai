@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent(typeof(Flee))]
 public class Evade : MonoBehaviour
 {
-    /* Maximum prediction time the pursue will predict in the future */
+    /*     // 未来预测的最大预测时间 */
     public float maxPrediction = 1f;
 
     private Flee flee;
@@ -15,16 +15,16 @@ public class Evade : MonoBehaviour
         flee = GetComponent<Flee>();
     }
 
-    public Vector3 getSteering(Rigidbody target)
+    public Vector3 GetSteering(Rigidbody target)
     {
-        /* Calculate the distance to the target */
+        /*  计算到目标的距离  */
         Vector3 displacement = target.position - transform.position;
         float distance = displacement.magnitude;
 
-        /* Get the targets's speed */
+        /*  获得目标现在的速度  */
         float speed = target.velocity.magnitude;
 
-        /* Calculate the prediction time */
+        // 计算预测时间 （不能让预测时间能跑的距离 超过当前的距离）
         float prediction;
         if (speed <= distance / maxPrediction)
         {
@@ -33,13 +33,14 @@ public class Evade : MonoBehaviour
         else
         {
             prediction = distance / speed;
-            //Place the predicted position a little before the target reaches the character
+            // 目标到达角色前，将预测位置在往前一点
             prediction *= 0.9f;
         }
 
-        /* Put the target together based on where we think the target will be */
+        // 目标 ： 在目标位置基础上添加预测的部分
         Vector3 explicitTarget = target.position + target.velocity * prediction;
 
+        // 使用之前的逃离功能
         return flee.getSteering(explicitTarget);
     }
 }

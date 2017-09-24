@@ -16,9 +16,13 @@ public class PursueUnit : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        // 得到 线性加速度
         Vector3 accel = pursue.getSteering(target);
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        // 设置刚体速度
+        steeringBasics.Steer(accel);
+
+        // 朝向
+        steeringBasics.LookWhereYoureGoing();
 	}
 }

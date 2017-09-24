@@ -3,7 +3,7 @@ using System.Collections;
 
 [RequireComponent(typeof(SteeringBasics))]
 public class OffsetPursuit : MonoBehaviour {
-    /* Maximum prediction time the pursue will predict in the future */
+    /*未来预测的最大预测时间*/
     public float maxPrediction = 1f;
 
     private Rigidbody rb;
@@ -24,18 +24,19 @@ public class OffsetPursuit : MonoBehaviour {
 
     public Vector3 getSteering(Rigidbody target, Vector3 offset, out Vector3 targetPos)
     {
+        // 得到世界坐标的偏移位置
         Vector3 worldOffsetPos = target.position + target.transform.TransformDirection(offset);
 
-        //Debug.DrawLine(transform.position, worldOffsetPos);
+        Debug.DrawLine(transform.position, worldOffsetPos);
 
-        /* Calculate the distance to the offset point */
+        /* 计算距离到偏移点 */
         Vector3 displacement = worldOffsetPos - transform.position;
         float distance = displacement.magnitude;
 
-        /* Get the character's speed */
+ 
         float speed = rb.velocity.magnitude;
 
-        /* Calculate the prediction time */
+        /* 预测的距离不要超过当前距离 */
         float prediction;
         if (speed <= distance / maxPrediction)
         {
@@ -46,9 +47,9 @@ public class OffsetPursuit : MonoBehaviour {
             prediction = distance / speed;
         }
 
-        /* Put the target together based on where we think the target will be */
+        /* 目标位置 */
         targetPos = worldOffsetPos + target.velocity * prediction;
 
-        return steeringBasics.arrive(targetPos);
+        return steeringBasics.Arrive(targetPos);
     }
 }

@@ -3,14 +3,17 @@ using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Flee : MonoBehaviour {
-
+    // 跟目标保持的距离
     public float panicDist = 3.5f;
-
+    
+    // 是否开启快到目标时减速
     public bool decelerateOnStop = true;
 
     public float maxAcceleration = 10f;
 
+    // 跟 SteeringBasics2中的意思类似， 
     public float timeToTarget = 0.1f;
+
 
     private Rigidbody rb;
 
@@ -19,24 +22,23 @@ public class Flee : MonoBehaviour {
         rb = GetComponent<Rigidbody>();
 	}
 
-    /* A flee steering behavior. Will return the steering for the current game object to flee a given position */
     public Vector3 getSteering(Vector3 targetPosition)
     {
-        //Get the direction
+        // 得到方向
         Vector3 acceleration = transform.position - targetPosition;
 
-        //If the target is far way then don't flee
+        // 不需要逃离了
         if (acceleration.magnitude > panicDist)
         {
-            //Slow down if we should decelerate on stop
+            // 如果我们要减速，就放慢速度
             if (decelerateOnStop && rb.velocity.magnitude > 0.001f)
             {
-                //Decelerate to zero velocity in time to target amount of time
-                acceleration = -rb.velocity / timeToTarget;
 
                 if (acceleration.magnitude > maxAcceleration)
                 {
-                    acceleration = giveMaxAccel(acceleration);
+                    // 减速到0速  需要的时间
+                    acceleration = -rb.velocity / timeToTarget;
+
                 }
 
                 return acceleration;
@@ -48,17 +50,18 @@ public class Flee : MonoBehaviour {
             }
         }
 
+        // 以最大速度逃离
         return giveMaxAccel(acceleration);
     }
 
+    // 最大加速度
     private Vector3 giveMaxAccel(Vector3 v)
     {
-        //Remove the z coordinate
+        // 移除z影响
         v.z = 0;
 
         v.Normalize();
 
-        //Accelerate to the target
         v *= maxAcceleration;
 
         return v;

@@ -16,7 +16,7 @@ public class Wander1Unit : MonoBehaviour {
 	void Update () {
         Vector3 accel = wander.getSteering();
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
     }
 }

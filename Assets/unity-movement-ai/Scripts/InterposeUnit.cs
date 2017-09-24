@@ -19,7 +19,7 @@ public class InterposeUnit : MonoBehaviour {
     {
         Vector3 accel = steeringBasics.interpose(target1, target2);
 
-        steeringBasics.steer(accel);
-        steeringBasics.lookWhereYoureGoing();
+        steeringBasics.Steer(accel);
+        steeringBasics.LookWhereYoureGoing();
     }
 }

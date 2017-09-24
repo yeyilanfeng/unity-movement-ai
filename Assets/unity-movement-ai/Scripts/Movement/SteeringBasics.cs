@@ -36,7 +36,7 @@ public class SteeringBasics : MonoBehaviour {
 	}
 	
 	/* Updates the velocity of the current game object by the given linear acceleration */
-	public void steer(Vector3 linearAcceleration) {
+	public void Steer(Vector3 linearAcceleration) {
 		rb.velocity += linearAcceleration * Time.deltaTime;
 		
 		if (rb.velocity.magnitude > maxVelocity) {
@@ -44,8 +44,8 @@ public class SteeringBasics : MonoBehaviour {
 		}
 	}
 
-	public void steer(Vector2 linearAcceleration) {
-		this.steer (new Vector3 (linearAcceleration.x, linearAcceleration.y, 0));
+	public void Steer(Vector2 linearAcceleration) {
+		this.Steer (new Vector3 (linearAcceleration.x, linearAcceleration.y, 0));
 	}
 	
 	/* A seek steering behavior. Will return the steering for the current game object to seek a given position */
@@ -70,7 +70,7 @@ public class SteeringBasics : MonoBehaviour {
     }
 
     /* Makes the current game object look where he is going */
-    public void lookWhereYoureGoing() {
+    public void LookWhereYoureGoing() {
 		Vector2 direction = rb.velocity;
 
 		if (smoothing) {
@@ -117,7 +117,7 @@ public class SteeringBasics : MonoBehaviour {
     }
 
     /* Returns the steering for a character so it arrives at the target */
-    public Vector3 arrive(Vector3 targetPosition) {
+    public Vector3 Arrive(Vector3 targetPosition) {
 		/* Get the right direction for the linear acceleration */
 		Vector3 targetVelocity = targetPosition - transform.position;
 
@@ -174,10 +174,10 @@ public class SteeringBasics : MonoBehaviour {
 
         midPoint = (futureTarget1Pos + futureTarget2Pos) / 2;
 
-        return arrive(midPoint);
+        return Arrive(midPoint);
     }
 
-    /* Checks to see if the target is in front of the character */
+    /* 检查目标是否在角色前方  （主要就是Dot点积）， 叉积结果的y可以判断左右*/
     public bool isInFront(Vector3 target)
     {
         return isFacing(target, 0);
@@ -192,7 +192,8 @@ public class SteeringBasics : MonoBehaviour {
         return Vector2.Dot(facing, directionToTarget) >= cosineValue;
     }
 
-    public static float getBoundingRadius(Transform t)
+    // 返回角色半径（根据  碰撞体大小  设置， 碰撞体大小受到 Scale的影响）
+    public static float GetBoundingRadius(Transform t)
     {
         SphereCollider col = t.GetComponent<SphereCollider>();
         return Mathf.Max(t.localScale.x, t.localScale.y, t.localScale.z) * col.radius;
